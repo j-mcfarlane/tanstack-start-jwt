@@ -41,6 +41,8 @@ Here is a summary of the available API endpoints:
     **POST** `http://localhost:7588/authentication/refresh`  
     Generates new JWT tokens for the user. (Requires the refresh token to be provided as a bearer token in the `Authorization` header.)
 
-## Frontend
+## Client
 
-To run the frontend simply run `pnpm run dev` inside the client folder
+To run the frontend simply run `pnpm run dev` inside the client folder.
+
+When the project loads you will see the home page with two links (login and dashboard). Clicking the dashboard should redirect you to the login page. **IF YOU HAVE NOT REGISTERED A USER LOGIN WILL FAIL** if it is your first time running the project make sure you go to the registration page first and click the link. This should create a user and log you in automatically.
