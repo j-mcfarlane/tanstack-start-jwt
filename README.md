@@ -40,3 +40,7 @@ Here is a summary of the available API endpoints:
 -   **Refresh Token**  
     **POST** `http://localhost:7588/authentication/refresh`  
     Generates new JWT tokens for the user. (Requires the refresh token to be provided as a bearer token in the `Authorization` header.)
+
+## Frontend
+
+To run the frontend simply run `pnpm run dev` inside the client folder
