@@ -6,6 +6,7 @@ import { ProvidersModule } from './providers'
 
 // Middlewares
 import { UserModule } from './modules/user'
+import { JwtModule } from './modules/jwt'
 
 @Module({
     imports: [
@@ -14,6 +15,7 @@ import { UserModule } from './modules/user'
         ProvidersModule,
 
         // Modules
+        JwtModule,
         UserModule,
     ],
 })
