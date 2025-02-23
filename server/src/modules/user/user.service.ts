@@ -18,8 +18,8 @@ export class UserService {
 
     get register() {
         return {
-            withEmail: (dto: { email: string; password: string }): Promise<User> => {
-                const candidate = this._factory.register.withEmail(dto)
+            withEmail: async (dto: { email: string; password: string }): Promise<User> => {
+                const candidate = await this._factory.register.withEmail(dto)
 
                 return this._repository.create(candidate)
             },
@@ -53,9 +53,10 @@ export class UserService {
                         refresh: null,
                     })
                 },
-                refresh: (id: string, refresh: string): Promise<User> => {
+
+                refresh: async (id: string, refresh: string): Promise<User> => {
                     return this._repository.update(id, {
-                        refresh: this._stringEncryptor.hash(refresh),
+                        refresh: await this._stringEncryptor.generate(refresh),
                     })
                 },
             },

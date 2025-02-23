@@ -12,11 +12,11 @@ export class UserFactory {
 
     get register() {
         return {
-            withEmail: (dto: { email: string; password: string }): User => {
+            withEmail: async (dto: { email: string; password: string }): Promise<User> => {
                 const user = new User()
 
                 user.email = dto.email
-                user.password = this._stringEncryptor.hash(dto.password)
+                user.password = await this._stringEncryptor.generate(dto.password)
                 user.refresh = null
 
                 return user

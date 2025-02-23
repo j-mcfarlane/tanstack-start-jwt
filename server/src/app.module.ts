@@ -5,8 +5,9 @@ import { ConfigModule } from './app.config.module'
 import { ProvidersModule } from './providers'
 
 // Middlewares
-import { UserModule } from './modules/user'
+import { AuthenticationModule } from './modules/authentication'
 import { JwtModule } from './modules/jwt'
+import { UserModule } from './modules/user'
 
 @Module({
     imports: [
@@ -15,6 +16,7 @@ import { JwtModule } from './modules/jwt'
         ProvidersModule,
 
         // Modules
+        AuthenticationModule,
         JwtModule,
         UserModule,
     ],

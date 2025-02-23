@@ -1,35 +1,25 @@
 import { Injectable } from '@nestjs/common'
-import { randomBytes, pbkdf2Sync } from 'crypto'
+import * as argon2 from 'argon2'
 
 @Injectable()
 export class StringEncryptor {
-    private readonly ITERATIONS = 10000
-    private readonly KEY_LENGTH = 64
-    private readonly DIGEST = 'sha512'
-
-    public compare(text: string, hash: string): boolean {
-        const [salt, storedHash] = hash.split(':')
-        const hashBuffer = pbkdf2Sync(text, salt, this.ITERATIONS, this.KEY_LENGTH, this.DIGEST)
-
-        return hashBuffer.toString('hex') === storedHash
+    public async compare(text: string, hash: string): Promise<boolean> {
+        return await argon2.verify(hash, text)
     }
 
-    public hash(text: string): string {
-        const salt = randomBytes(16).toString('hex')
-        const hashBuffer = pbkdf2Sync(text, salt, this.ITERATIONS, this.KEY_LENGTH, this.DIGEST)
-
-        return `${salt}:${hashBuffer.toString('hex')}`
+    public async generate(text: string): Promise<string> {
+        return await argon2.hash(text)
     }
 
     public generateRandomString(count: number): string {
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-
         let result = ''
 
         for (let i = 0; i < count; i++) {
             const randomIndex = Math.floor(Math.random() * characters.length)
             result += characters[randomIndex]
         }
+
         return result
     }
 
