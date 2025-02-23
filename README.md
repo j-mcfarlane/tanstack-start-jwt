@@ -5,7 +5,7 @@ This project demonstrates how to integrate Tanstack Start with an external API u
 The repository is divided into two main directories:
 
 -   **server**: A NestJS-based backend that uses MongoDB as its database. MongoDB is run inside a Docker container.
--   **client**: The front-end implementation.
+-   **client**: Tanstack Start with Tanstack Query.
 
 ## Setup
 
