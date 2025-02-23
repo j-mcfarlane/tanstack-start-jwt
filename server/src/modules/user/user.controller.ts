@@ -14,7 +14,7 @@ export class UserController {
     @UseGuards(AuthorizationGuard)
     @Get('me')
     async current(@GetPayload() payload: { user: string }): Promise<{ data: User; success: boolean }> {
-        const data = await this._service.retrieve.byId(payload.user)
+        const data = await this._service.retrieve.byId(await payload.user)
 
         return {
             data,
