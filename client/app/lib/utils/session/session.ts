@@ -7,7 +7,7 @@ type SessionUser = {
 
 export function useAppSession() {
     return useSession<SessionUser>({
-        name: 'session',
+        name: process.env.AUTH_SESSION_NAME,
         password: process.env.SESSION_SECRET!,
         cookie: {
             path: '/',

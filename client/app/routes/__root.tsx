@@ -15,6 +15,7 @@ import { Auth } from '@/app/lib/schema/auth'
 
 // Data
 import { verifyAuth } from '@/app/lib/data/query/auth/verify-auth'
+import { deleteCookie } from '@tanstack/start/server'
 
 export const Route = createRootRouteWithContext<{
     auth: Auth

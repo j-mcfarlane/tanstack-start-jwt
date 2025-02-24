@@ -1,5 +1,7 @@
 import axios, { AxiosInstance } from 'axios'
 import { useAppSession } from '../session/session'
+import { redirect } from '@tanstack/react-router'
+import { deleteCookie } from '@tanstack/start/server'
 
 export async function useAxios() {
     const http = async (): Promise<AxiosInstance> => {
@@ -53,11 +55,20 @@ export async function useAxios() {
 
                         return instance(originalRequest)
                     } catch (refreshError) {
-                        return Promise.reject(refreshError)
+                        await session.clear()
+                        deleteCookie(process.env.AUTH_SESSION_NAME!)
+
+                        throw redirect({
+                            to: '/login',
+                        })
                     }
                 }
+                await session.clear()
+                deleteCookie(process.env.AUTH_SESSION_NAME!)
 
-                return Promise.reject(error)
+                throw redirect({
+                    to: '/login',
+                })
             },
         )
 
