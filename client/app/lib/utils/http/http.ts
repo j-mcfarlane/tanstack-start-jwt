@@ -25,7 +25,7 @@ export async function useAxios() {
 
                     try {
                         const refreshResponse = await axios.post(
-                            `http://localhost:7588/authentication/refresh`,
+                            `${process.env.BACKEND_URL}/authentication/refresh`,
                             {},
                             {
                                 headers: {

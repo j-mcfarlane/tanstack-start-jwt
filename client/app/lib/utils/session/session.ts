@@ -1,4 +1,5 @@
-import { getWebRequest, useSession } from '@tanstack/start/server'
+import { useSession } from '@tanstack/start/server'
+
 type SessionUser = {
     access: string
     refresh: string
@@ -7,7 +8,7 @@ type SessionUser = {
 export function useAppSession() {
     return useSession<SessionUser>({
         name: 'session',
-        password: 'ChangeThisBeforeShippingToProdOrYouWillBeFired',
+        password: process.env.SESSION_SECRET!,
         cookie: {
             path: '/',
             httpOnly: true,

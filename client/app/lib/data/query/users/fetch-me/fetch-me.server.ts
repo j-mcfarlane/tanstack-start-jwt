@@ -2,7 +2,8 @@ import { User } from '@/app/lib/types'
 import { notFound } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/start'
 import { useAxios } from '@/app/lib/utils/http'
-import { useAppSession } from '@/app/lib/utils/session/session'
+import { useAppSession } from '@/app/lib/utils/session'
+
 export const fetchMe = createServerFn({ method: 'GET' }).handler<User>(async () => {
     const { http } = await useAxios()
     const session = await useAppSession()
