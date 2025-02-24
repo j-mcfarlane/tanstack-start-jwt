@@ -1,7 +1,6 @@
 import { ConfigService } from '@nestjs/config'
 import { Injectable } from '@nestjs/common'
 import { JwtService as NestJWTService } from '@nestjs/jwt'
-import ms from 'ms'
 
 // Schemas
 import { User } from '../user/user.schema'
@@ -16,7 +15,9 @@ export class JwtService {
     private _signToken(payload: { user: string }, refresh: boolean): Promise<string> {
         return this._nestJWTService.signAsync(payload, {
             secret: refresh ? this.config.get<string>('app.jwt_refresh') : this.config.get<string>('app.jwt_access'),
-            expiresIn: refresh ? ms('7d') : ms('10m'),
+            expiresIn: refresh
+                ? this.config.get<string>('app.jwt_refresh_expires_in')
+                : this.config.get<string>('app.jwt_access_expires_in'),
             issuer: this.config.get<string>('app.jwt_issuer'),
         })
     }

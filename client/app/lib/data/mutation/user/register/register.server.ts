@@ -1,13 +1,11 @@
 import { createServerFn } from '@tanstack/start'
-import { setCookie } from '@tanstack/start/server'
-
-// Axios
 import { useAxios } from '@/app/lib/utils/http'
+import { useAppSession } from '@/app/lib/utils/session'
 
 export const registerFn = createServerFn({ method: 'POST' })
     .validator((d: { email: string; password: string }) => d as { email: string; password: string })
     .handler(async ({ data }) => {
-        const { http } = useAxios()
+        const { http } = await useAxios()
 
         const response = await http.post<{
             success: boolean
@@ -17,8 +15,11 @@ export const registerFn = createServerFn({ method: 'POST' })
             }
         }>('/authentication/register', data)
 
-        setCookie('access', response.data.data.access)
-        setCookie('refresh', response.data.data.refresh)
+        const session = await useAppSession()
+        await session.update({
+            access: response.data.data.access,
+            refresh: response.data.data.refresh,
+        })
 
         return {
             ...response.data,
