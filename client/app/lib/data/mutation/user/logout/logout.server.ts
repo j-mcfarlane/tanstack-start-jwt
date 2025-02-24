@@ -1,11 +1,10 @@
 import { createServerFn } from '@tanstack/start'
-import { deleteCookie } from '@tanstack/start/server'
 
 // Axios
 import { useAxios } from '@/app/lib/utils/http'
-
+import { useAppSession } from '@/app/lib/utils/session'
 export const logoutFn = createServerFn({ method: 'POST' }).handler(async () => {
-    const { http } = useAxios()
+    const { http } = await useAxios()
 
     await http.post<{
         success: boolean
@@ -15,8 +14,8 @@ export const logoutFn = createServerFn({ method: 'POST' }).handler(async () => {
         }
     }>('/authentication/logout', {})
 
-    deleteCookie('access')
-    deleteCookie('refresh')
+    const session = await useAppSession()
+    await session.clear()
 
     return {
         success: true,

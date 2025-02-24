@@ -1,14 +1,17 @@
 import axios, { AxiosInstance } from 'axios'
-import { getCookie, setCookie } from '@tanstack/start/server'
-import ms from 'ms'
+import { useAppSession } from '../session/session'
+import { redirect } from '@tanstack/react-router'
+import { deleteCookie } from '@tanstack/start/server'
 
-export function useAxios() {
-    const http = (): AxiosInstance => {
-        const access = getCookie('access') || null
-        const refresh = getCookie('refresh') || null
+export async function useAxios() {
+    const http = async (): Promise<AxiosInstance> => {
+        const session = await useAppSession()
+
+        const access = session.data?.access || null
+        const refresh = session.data?.refresh || null
 
         const instance = axios.create({
-            baseURL: `http://localhost:7588`,
+            baseURL: process.env.BACKEND_URL,
             headers: {
                 Authorization: `Bearer ${access}`,
             },
@@ -24,7 +27,7 @@ export function useAxios() {
 
                     try {
                         const refreshResponse = await axios.post(
-                            `http://localhost:7588/authentication/refresh`,
+                            `${process.env.BACKEND_URL}/authentication/refresh`,
                             {},
                             {
                                 headers: {
@@ -37,14 +40,11 @@ export function useAxios() {
                         const newAccess = refreshResponse.data.data.access
                         const newRefresh = refreshResponse.data.data.refresh
 
-                        // Update cookies with the new tokens
-                        setCookie('access', newAccess, {
-                            maxAge: ms('10m'),
-                            path: '/',
-                        })
-                        setCookie('refresh', newRefresh, {
-                            maxAge: ms('7d'),
-                            path: '/',
+                        // Update session
+                        const session = await useAppSession()
+                        await session.update({
+                            access: newAccess,
+                            refresh: newRefresh,
                         })
 
                         // Update instance default header for subsequent requests
@@ -55,11 +55,20 @@ export function useAxios() {
 
                         return instance(originalRequest)
                     } catch (refreshError) {
-                        return Promise.reject(refreshError)
+                        await session.clear()
+                        deleteCookie(process.env.AUTH_SESSION_NAME!)
+
+                        throw redirect({
+                            to: '/login',
+                        })
                     }
                 }
+                await session.clear()
+                deleteCookie(process.env.AUTH_SESSION_NAME!)
 
-                return Promise.reject(error)
+                throw redirect({
+                    to: '/login',
+                })
             },
         )
 
@@ -67,6 +76,6 @@ export function useAxios() {
     }
 
     return {
-        http: http(),
+        http: await http(),
     }
 }
